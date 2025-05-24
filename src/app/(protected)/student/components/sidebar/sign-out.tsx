@@ -19,7 +19,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../../../../components/ui/tooltip";
+} from "@lasuhealth/components/ui/tooltip";
 
 export function SignOut() {
   const { state } = useSidebar();

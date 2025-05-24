@@ -1,4 +1,4 @@
-import DashboardIcon from "../../../../../public/uploads/dashboard-icon";
+import DashboardIcon from "../../../../../../public/uploads/dashboard-icon";
 export interface NavElement {
   title: string;
   href: string;

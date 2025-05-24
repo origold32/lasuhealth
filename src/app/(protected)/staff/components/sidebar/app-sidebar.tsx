@@ -3,8 +3,8 @@
 import * as React from "react";
 import { FooterElements } from "./nav-footer";
 import { NavigationElements } from "./nav-elements";
-import { SignOut } from "@lasuhealth/app/staff/components/sidebar/sign-out";
-import { LogoDisplay } from "@lasuhealth/app/staff/components/sidebar/logo-display";
+import { SignOut } from "./sign-out";
+import { LogoDisplay } from "./logo-display";
 import {
   Sidebar,
   SidebarContent,
@@ -12,9 +12,8 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@lasuhealth/components/ui/sidebar";
-import { Separator } from "../../../../components/ui/separator";
-import { ScrollArea } from "../../../../components/ui/scroll-area";
-
+import { ScrollArea } from "@lasuhealth/components/ui/scroll-area";
+import { Separator } from "@lasuhealth/components/ui/separator";
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>

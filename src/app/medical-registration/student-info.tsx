@@ -2,6 +2,8 @@ import { IoMailOutline } from "react-icons/io5";
 import departments from "@lasuhealth/store/department.json";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { PiPlus } from "react-icons/pi";
+import { useState } from "react";
+import Image from "next/image";
 
 const faculties = [
   "Allied Health Sciences",
@@ -20,6 +22,19 @@ const faculties = [
 
 const maritalStatus = ["Single", "Married", "Divorced", "Widowed", "Separated"];
 export default function StudentInformation() {
+  const [passportPreview, setPassportPreview] = useState<string | null>(null);
+
+  const handlePassportChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPassportPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="space-y-4 w-full">
       <div className="flex flex-col space-y-2">
@@ -33,8 +48,18 @@ export default function StudentInformation() {
             id="passport"
             accept="image/*"
             className="hidden"
+            onChange={handlePassportChange}
           />
-          <PiPlus className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#1AB2FF] text-3xl" />
+          {passportPreview ? (
+            <Image
+              src={passportPreview}
+              alt="Passport Preview"
+              fill
+              className="rounded-md object-cover"
+            />
+          ) : (
+            <PiPlus className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#1AB2FF] text-3xl" />
+          )}
         </div>
       </div>
 

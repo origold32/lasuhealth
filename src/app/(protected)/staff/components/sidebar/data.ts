@@ -1,7 +1,7 @@
 import { PiPackage, PiHeadset } from "react-icons/pi";
 import { RiSettings2Line } from "react-icons/ri";
-import FolderIcon from "../../../../../public/uploads/folder-icons";
-import DashboardIcon from "../../../../../public/uploads/dashboard-icon";
+import FolderIcon from "../../../../../../public/uploads/folder-icons";
+import DashboardIcon from "../../../../../../public/uploads/dashboard-icon";
 export interface NavElement {
   title: string;
   href: string;

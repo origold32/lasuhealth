@@ -12,7 +12,7 @@ export default function Page() {
 
   return (
     <div className="px-4 relative">
-      <div className="p-2 flex items-center justify-between">
+      <div className="p-2 md:py-6 flex flex-col space-y-2 md:space-y-0 md:flex-row md:items-center justify-between">
         <div>
           <h1 className="flex items-center gap-2 text-2xl font-semibold text-[#040404]">
             Welcome {/* <UserName /> */}
@@ -29,12 +29,13 @@ export default function Page() {
             <Calendar size={16} />
           </div>
 
-          <div className="space-y-1">
+          <div className="flex md:flex-col md:space-y-1 items-center space-x-4 md:space-x-0">
             <p className="text-xs text-[#475467]">Today&apos;s Date</p>
             <p className="font-semibold text-[#040404] text-sm">{today}</p>
           </div>
         </div>
       </div>
+
       <ScrollArea className="h-[75vh]">
         <div className="flex flex-col space-y-4">
           <Profile />

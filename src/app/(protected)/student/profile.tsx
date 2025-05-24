@@ -63,7 +63,7 @@ export default function Profile() {
                       "rounded-full text-xs py-1 px-2 flex items-center gap-0.5",
                       metric.trend === "5%"
                         ? "bg-[#E7F6EC] text-[#04802E]"
-                        : "bg-[#F04438]"
+                        : "bg-[#FFECE5] text-[#AD3307]"
                     )}
                   >
                     <BiChart />
