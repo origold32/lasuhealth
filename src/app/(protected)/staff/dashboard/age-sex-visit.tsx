@@ -116,7 +116,7 @@ export default function AgeSexVisit() {
   }, []);
 
   return (
-    <Card className="bg-white border border-[F7F9FC] p-4 rounded-lg shadow-sm">
+    <Card className="bg-white border border-[F7F9FC] p-4">
       <CardHeader>
         <CardTitle className="font-bold text-[#040404]">
           Visit Patient by Age and Sex

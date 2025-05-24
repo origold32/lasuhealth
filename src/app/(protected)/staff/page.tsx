@@ -5,6 +5,8 @@ import MonthlyVisit from "./dashboard/montly-visit";
 import ActiveStudents from "./dashboard/active-students";
 import MonthlyAttendanceChart from "./dashboard/monthly-attendance-chart";
 import AgeSexVisit from "./dashboard/age-sex-visit";
+import FacultyDepartmentVisit from "./dashboard/faculty-dept-visit";
+import Top10Diagnosis from "./dashboard/top-10-diagnosis";
 
 export default function page() {
   const today = new Date().toLocaleDateString("en-US", {
@@ -49,6 +51,10 @@ export default function page() {
           <div className="grid md:grid-cols-[65%_35%] gap-4">
             <MonthlyAttendanceChart />
             <AgeSexVisit />
+          </div>
+          <div className="grid md:grid-cols-[60%_40%] gap-4">
+            <FacultyDepartmentVisit />
+            <Top10Diagnosis />
           </div>
         </div>
       </ScrollArea>
