@@ -116,7 +116,7 @@ export default function AgeSexVisit() {
   }, []);
 
   return (
-    <Card className="bg-white border border-[F7F9FC] p-4">
+    <Card className="bg-white border border-[F7F9FC] p-4 rounded-lg shadow-md">
       <CardHeader>
         <CardTitle className="font-bold text-[#040404]">
           Visit Patient by Age and Sex
@@ -133,21 +133,21 @@ export default function AgeSexVisit() {
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 px-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="w-4 h-4 bg-[#3FB8F7] rounded-full" />
-                <span className="font-medium text-[#333333]">Male</span>
+                <span className="text-sm text-[#333333]">Male</span>
               </div>
-              <span className="text-[#333333]">25-65 Age</span>
+              <span className="text-[#333333] text-sm">25-65 Age</span>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="w-4 h-4 bg-[#FF74C3] rounded-full" />
-                <span className="font-medium text-[#333333]">Female</span>
+                <span className="text-sm text-[#333333]">Female</span>
               </div>
-              <span className="text-[#333333]">0-25 Age</span>
+              <span className="text-[#333333] text-sm">0-25 Age</span>
             </div>
           </div>
         </div>

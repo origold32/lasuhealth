@@ -48,7 +48,7 @@ export default function page() {
             <ActiveStudents />
           </div>
 
-          <div className="grid md:grid-cols-[65%_35%] gap-4">
+          <div className="grid md:grid-cols-[55%_45%] gap-4">
             <MonthlyAttendanceChart />
             <AgeSexVisit />
           </div>

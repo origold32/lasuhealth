@@ -118,16 +118,38 @@ export default function FacultyDepartmentVisit() {
       <CardContent>
         <Bar data={data} options={options} />
 
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm text-[#040404]">
-          {fullFacultyNames.map((name, idx) => (
-            <div key={name} className="flex justify-between">
-              <span>{name}</span>
-              <span className="font-semibold text-[#D16EFF]">
-                {facultyValues[idx]}
-              </span>
-            </div>
-          ))}
-        </div>
+        <table className="w-full text-sm text-[#040404] mt-6">
+          <tbody>
+            {Array.from({ length: Math.ceil(fullFacultyNames.length / 3) }).map(
+              (_, rowIndex) => (
+                <tr
+                  key={rowIndex}
+                  className="border-b border-[#d5d5d5] last:border-b-0"
+                >
+                  {Array.from({ length: 3 }).map((_, colIndex) => {
+                    const index = rowIndex * 3 + colIndex;
+                    if (index >= fullFacultyNames.length)
+                      return <td key={colIndex} />;
+
+                    return (
+                      <td
+                        key={colIndex}
+                        className="p-2 align-top w-1/3 border-l first:border-l-0 border-[#d5d5d5]"
+                      >
+                        <div className="flex justify-between pr-2">
+                          <span>{fullFacultyNames[index]}</span>
+                          <span className="font-semibold text-[#D16EFF]">
+                            {facultyValues[index]}
+                          </span>
+                        </div>
+                      </td>
+                    );
+                  })}
+                </tr>
+              )
+            )}
+          </tbody>
+        </table>
       </CardContent>
     </Card>
   );

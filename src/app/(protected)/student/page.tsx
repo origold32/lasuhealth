@@ -36,7 +36,7 @@ export default function Page() {
         </div>
       </div>
 
-      <ScrollArea className="h-[75vh]">
+      <ScrollArea className="h-[70vh]">
         <div className="flex flex-col space-y-4">
           <Profile />
         </div>

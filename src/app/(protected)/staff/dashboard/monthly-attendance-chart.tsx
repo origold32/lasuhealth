@@ -35,8 +35,8 @@ const { RangePicker } = DatePicker;
 
 export default function MonthlyAttendanceChart() {
   const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([
-    dayjs("2025-01-01"),
-    dayjs("2025-12-20"),
+    dayjs("01-01-2025"),
+    dayjs("12-20-2025"),
   ]);
 
   const labels = [...Array(12).keys()].map((i) =>
@@ -128,9 +128,14 @@ export default function MonthlyAttendanceChart() {
     to: Date
   ) => {
     const rows = [["Month", "Visits"]];
+
     labels.forEach((label, index) => {
-      rows.push([label, data[index].toString()]);
+      const monthDate = new Date(2025, index, 1);
+      if (monthDate >= from && monthDate <= to) {
+        rows.push([label, data[index].toString()]);
+      }
     });
+
     const csvContent =
       "data:text/csv;charset=utf-8," + rows.map((e) => e.join(",")).join("\n");
     const encodedUri = encodeURI(csvContent);
@@ -148,24 +153,26 @@ export default function MonthlyAttendanceChart() {
   return (
     <Card className="bg-white border border-[#F7F9FC] p-4">
       <CardHeader>
-        <CardTitle className="flex justify-between items-center">
-          <h2 className="font-bold text-[#040404]">Monthly Attendance</h2>
-          <div className="flex items-center gap-2">
-            <RangePicker
-              value={dateRange}
-              onChange={(dates) => setDateRange(dates ?? [null, null])}
-              format="YYYY-MM-DD"
-              style={{ height: 32, fontSize: 12 }}
-              allowClear={false}
-            />
+        <CardTitle>
+          <div className="grid md:grid-cols-[35%_65%] justify-between gap-4 md:items-center">
+            <h2 className="font-bold text-[#040404]">Monthly Attendance</h2>
+            <div className="grid grid-cols-[65%_35%] items-center gap-2">
+              <RangePicker
+                value={dateRange}
+                onChange={(dates) => setDateRange(dates ?? [null, null])}
+                format="DD-MM-YYYY"
+                style={{ height: 32, fontSize: 12 }}
+                allowClear={false}
+              />
 
-            <button
-              onClick={handleExportCSV}
-              className="bg-[#EB5017] flex items-center gap-2 text-white px-3 py-2 rounded-md text-xs hover:bg-[#d63d11] transition-colors"
-            >
-              <span>Export CSV</span>
-              <FaDownload />
-            </button>
+              <button
+                onClick={handleExportCSV}
+                className="bg-[#EB5017] flex items-center justify-center gap-2 text-white px-2 md:px-3 py-2 rounded-md text-xs hover:bg-[#d63d11] transition-colors"
+              >
+                <span>Export CSV</span>
+                <FaDownload />
+              </button>
+            </div>
           </div>
         </CardTitle>
       </CardHeader>

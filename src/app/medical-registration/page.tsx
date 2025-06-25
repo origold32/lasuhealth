@@ -75,7 +75,7 @@ export default function Page() {
 
   return (
     <div className="h-screen flex items-center justify-center bg-[#00000066]">
-      <div className="h-[95%] w-[95%] md:w-3/5 bg-white rounded-lg shadow-lg py-4 px-8 space-y-4 overflow-y-auto">
+      <div className="h-auto w-[95%] md:w-3/5 bg-white rounded-lg shadow-lg py-4 px-8 space-y-4 overflow-y-auto">
         <div className="grid md:grid-cols-2 justify-between items-end">
           <h2 className="text-2xl font-semibold">
             Complete your Medical Record
