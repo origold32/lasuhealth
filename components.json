@@ -1,21 +1,17 @@
 {
   "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "new-york",
+  "style": "default",
   "rsc": true,
   "tsx": true,
   "tailwind": {
-    "config": "",
-    "css": "src/app/globals.css",
-    "baseColor": "zinc",
+    "config": "tailwind.config.ts",
+    "css": "app/globals.css",
+    "baseColor": "slate",
     "cssVariables": true,
     "prefix": ""
   },
   "aliases": {
-    "components": "@lasuhealth/components",
-    "utils": "@lasuhealth/lib/utils",
-    "ui": "@lasuhealth/components/ui",
-    "lib": "@lasuhealth/lib",
-    "hooks": "@lasuhealth/hooks"
-  },
-  "iconLibrary": "lucide"
+    "components": "@/components",
+    "utils": "@/lib/utils"
+  }
 }
