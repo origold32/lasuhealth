@@ -1,4 +1,7 @@
 /** @type {import('next').NextConfig} */
+
+import withSvgr from "next-svgr";
+
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -25,4 +28,4 @@ const nextConfig = {
   // output: "export",
 };
 
-export default nextConfig;
+export default withSvgr(nextConfig);
