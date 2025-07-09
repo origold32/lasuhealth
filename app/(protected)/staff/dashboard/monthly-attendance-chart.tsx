@@ -34,7 +34,7 @@ export default function MonthlyAttendanceChart() {
     dayjs("12-20-2025"),
   ]);
 
-  const labels = [...Array(12).keys()].map((i) =>
+  const labels = Array.from({ length: 12 }, (_, i) =>
     new Date(2000, i).toLocaleString("default", { month: "short" })
   );
 

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { BiChart } from "react-icons/bi";
-import IconTrendUp from "../../../../../public/images/trend-up";
+import IconTrendUp from "../../../../public/images/trend-up";
 import { ChevronRight } from "lucide-react";
 
 export default function MonthlyVisit() {

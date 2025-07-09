@@ -8,7 +8,8 @@ import useSWR from "swr";
 import { fetcher } from "@/swr";
 import PageLocationIndicator from "@/components/layouts/page-location-indicator";
 import EmptyState from "@/components/empty-state";
-import DashboardLayout from "@/app/(dashboard)/_components/protected-layout";
+import ProtectedLayout from "@/app/(protected)/_components/protected-layout";
+
 export const dynamic = "force-dynamic";
 type Props = {};
 
@@ -16,7 +17,7 @@ const NotificationsPage = (props: Props) => {
   const { data } = useSWR(`/notification/all`, fetcher);
   const notifications: any = data?.data?.notifications ?? [];
   return (
-    <DashboardLayout>
+    <ProtectedLayout>
       <PageLocationIndicator
         titleCaptionProps={{ title: "All Notifications" }}
       />
@@ -49,7 +50,7 @@ const NotificationsPage = (props: Props) => {
           <EmptyState title="No Notifications Yet" />
         )}
       </div>
-    </DashboardLayout>
+    </ProtectedLayout>
   );
 };
 
