@@ -1,16 +1,25 @@
-import { formatDateString, isDateString } from "./format-date";
+import { formatFullDateTime } from "./format-date";
 
 type DataObject = { [key: string]: any };
 type DataOutput = { name: string; value: string };
+
+const isLikelyDate = (value: string): boolean => {
+  const parsed = Date.parse(value);
+  return !isNaN(parsed);
+};
 
 export const objectToArrayOfObject = (data: DataObject): DataOutput[] => {
   let output: DataOutput[] = [];
 
   Object.entries(data).forEach(([key, value]) => {
-    if (typeof value === "string" && isDateString(value)) {
-      output.push({ name: key, value: formatDateString(value) });
-    } else if (typeof value !== "object" || value === null || Array.isArray(value)) {
-      output.push({ name: key, value: value });
+    if (typeof value === "string" && isLikelyDate(value)) {
+      output.push({ name: key, value: formatFullDateTime(value) });
+    } else if (
+      typeof value !== "object" ||
+      value === null ||
+      Array.isArray(value)
+    ) {
+      output.push({ name: key, value: String(value) });
     } else {
       let subOutput = objectToArrayOfObject(value);
       output = [...output, ...subOutput];

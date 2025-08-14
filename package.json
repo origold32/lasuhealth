@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "ui": "shadcn add"
+    "ui": "shadcn add",
+    "dev:debug": "cross-env NODE_OPTIONS='--inspect --max-old-space-size=10240' npx next dev"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -41,6 +42,7 @@
     "chart.js": "^4.4.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cross-env": "^7.0.3",
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.13",
     "framer-motion": "^11.11.17",

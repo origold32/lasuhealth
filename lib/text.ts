@@ -1,3 +1,12 @@
+export const fileTextColors = [
+  "text-[#3B82F6]", // Blue
+  "text-[#10B981]", // Green
+  "text-[#8B5CF6]", // Purple
+  "text-[#EC4899]", // Pink
+  "text-[#EF4444]", // Red
+  "text-[#F97316]", // Orange
+];
+
 export function extractFirstLetters(
   inputString?: string,
   limit: number = Infinity
@@ -22,71 +31,45 @@ export function sentenceCase(
   limit: number = -1,
   additionalExcludedWords: string[] = []
 ): string {
-  if (!text) {
-    return "";
-  } else {
-    let words: string[] = text.split(" ");
+  if (!text) return "";
 
-    // If limit is specified and greater than 0, slice the words array
-    if (limit > 0) {
-      words = words.slice(0, limit);
-    }
+  let words = text.split(" ");
+  if (limit > 0) words = words.slice(0, limit);
 
-    if (excludeWords) {
-      // List of default words to exclude from capitalization
-      const defaultExcludedWords: string[] = [
-        "a",
-        "an",
-        "the",
-        "of",
-        "for",
-        "and",
-        "but",
-        "or",
-        "nor",
-        "on",
-        "at",
-        "to",
-        "by",
-        "with",
-        "as",
-      ];
-      // Merge default excluded words with additional excluded words
-      const excludedWords: string[] = [
-        ...defaultExcludedWords,
-        ...additionalExcludedWords,
-      ];
+  if (excludeWords) {
+    const defaultExcludedWords = [
+      "a",
+      "an",
+      "the",
+      "of",
+      "for",
+      "and",
+      "but",
+      "or",
+      "nor",
+      "on",
+      "at",
+      "to",
+      "by",
+      "with",
+      "as",
+    ];
+    const excludedWords = [...defaultExcludedWords, ...additionalExcludedWords];
 
-      // Capitalize the first letter of each word that is not in the excluded list
-      const capitalizedWords: string[] = [];
-      words.map((word) => {
-        // Ensure word is not empty
-        if (word.length > 0) {
-          // Capitalize if not in excluded list or if it's the first word
-          if (
-            excludedWords.indexOf(word.toLowerCase()) === -1 ||
-            capitalizedWords.length === 0
-          ) {
-            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-          } else {
-            return word.toLowerCase(); // Preserve excluded words
-          }
-        } else {
-          return word; // Preserve empty words
-        }
-      });
+    const capitalizedWords = words.map((word, idx) => {
+      if (!word) return word;
+      const lower = word.toLowerCase();
+      const shouldCap = idx === 0 || !excludedWords.includes(lower);
+      return shouldCap ? lower.charAt(0).toUpperCase() + lower.slice(1) : lower;
+    });
 
-      // Join the words back into a sentence
-      return capitalizedWords.join(" ");
-    } else {
-      // If exclusion is disabled, simply capitalize each word
-      return words
-        .map(
-          (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-        )
-        .join(" ");
-    }
+    return capitalizedWords.join(" ");
   }
+
+  // excludeWords == false → Title Case every word
+  return words
+    .map((w) => (w ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : w))
+    .join(" ");
 }
 
 // Example usage:

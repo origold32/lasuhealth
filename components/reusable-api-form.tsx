@@ -65,6 +65,7 @@ const ReusableApiForm = ({
       },
     }
   );
+  
   return (
     <div>
       {goBackProps ? <GoBack className="mb-10" {...goBackProps} /> : null}
@@ -77,6 +78,8 @@ const ReusableApiForm = ({
         />
       ) : null}
       <FormBuilder
+        // Pass the external loading state to FormBuilder
+        externalLoading={loading}
         onSubmit={async (data: Record<string, any>) => {
           let payload: any = { ...data, ...extraSubmitData };
 

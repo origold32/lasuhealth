@@ -2,39 +2,34 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import useSWRMutation from "swr/mutation";
 import { createRemoteMutationFetcher } from "@/swr";
 import { useUrlState } from "@/hooks/useUrlState";
 import Image from "next/image";
 import { FaEyeSlash, FaEye } from "react-icons/fa";
-import { login } from "@/auth/use-auth";
+import InputV1 from "@/components/input-v1";
+import useAuth from "@/auth/use-auth";
 
-export default function Home() {
+type UserRole = "student" | "staff";
+
+export default function Page() {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  type UserRole = "student" | "staff";
-
   const [role] = useUrlState<UserRole>("role", "student");
-  const router = useRouter();
+  const { login } = useAuth();
 
   const { trigger: loginTrigger, isMutating: loggingIn } = useSWRMutation(
     "/auth/login",
     createRemoteMutationFetcher("post"),
     {
       onSuccess: (data) => {
-        console.log("data login is", data);
-        const redirectPath = role === "staff" ? "/staff" : "/student";
-        login(data?.data?.token, redirectPath, data?.data?.user);
+        const user = data?.data;
+        login(data?.data?.token);
         toast.success("Login successful!");
-        console.log("Login successful, redirecting to", redirectPath);
       },
     }
   );
@@ -74,43 +69,37 @@ export default function Home() {
       </div>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
-        <div className="space-y-2">
-          <Label htmlFor="identifier">{labelText}</Label>
-          <Input
-            id="identifier"
-            name="identifier"
-            type={inputType}
-            value={identifier}
-            onChange={(e) => setIdentifier(e.target.value)}
-            placeholder={placeholderText}
+        <InputV1
+          label={labelText}
+          name="identifier"
+          type={inputType}
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
+          placeholder={placeholderText}
+          autoComplete=""
+          required
+        />
+
+        <div className="relative">
+          <InputV1
+            label="Password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
             autoComplete=""
             required
+            className="pr-10"
           />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-
-          <div className="relative">
-            <Input
-              id="password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              required
-              autoComplete=""
-              className="pr-10"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-800"
-              tabIndex={-1}
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-800"
+            tabIndex={-1}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
         </div>
 
         <div className="text-sm font-bold text-[#555555] text-center">
@@ -126,7 +115,7 @@ export default function Home() {
         <div className="grid gap-4 grid-cols-2">
           <Button
             type="submit"
-            disabled={loggingIn}
+            disabled={loggingIn || !isFormValid}
             className={cn(
               "bg-[#324C80] text-white hover:bg-[#29548F] cursor-pointer w-full"
             )}

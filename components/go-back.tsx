@@ -1,23 +1,44 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
 
 export type GoBackProps = {
   link?: string;
   className?: string;
   onClick?: () => void;
+  label?: string;
+  showIcon?: boolean;
 };
 
-const GoBack = ({ className, link, onClick }: GoBackProps) => {
+const GoBack = ({
+  className,
+  link,
+  onClick,
+  label = "Go back",
+  showIcon,
+}: GoBackProps) => {
   const router = useRouter();
+
+  const content = (
+    <>
+      {showIcon && <ChevronLeft color="#121528" />}
+      {label}
+    </>
+  );
+
   if (link) {
     return (
-      <Link className={cn("flex gap-2 items-center font-semibold text-muted-foreground w-max", className)} href={link}>
-        <ArrowLeft className=" text-black/90" /> Go back
+      <Link
+        href={link}
+        className={cn(
+          "flex gap-2 items-center font-semibold text-[#121528] w-max",
+          className
+        )}
+      >
+        {content}
       </Link>
     );
   }
@@ -25,11 +46,18 @@ const GoBack = ({ className, link, onClick }: GoBackProps) => {
   return (
     <button
       onClick={() => {
-        onClick ? onClick() : () => router.back();
+        if (onClick) {
+          onClick();
+        } else {
+          router.back();
+        }
       }}
-      className={cn("flex gap-2 items-center font-semibold text-muted-foreground cursor-pointer w-max", className)}
+      className={cn(
+        "flex gap-2 items-center font-semibold text-[#121528] cursor-pointer w-max",
+        className
+      )}
     >
-      <ArrowLeft className=" text-black/90" /> Go back
+      {content}
     </button>
   );
 };

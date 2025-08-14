@@ -25,7 +25,18 @@ const nextConfig = {
       },
     ],
   },
-  // output: "export",
-};
 
+  webpack(config, { isServer }) {
+    // Disable source maps only in production to save memory
+    if (!isServer && process.env.NODE_ENV === "production") {
+      config.devtool = false;
+    }
+
+    return config;
+  },
+  experimental: {
+    scrollRestoration: false,
+  },
+  reactStrictMode: false, // helps reduce memory use in development
+};
 export default withSvgr(nextConfig);

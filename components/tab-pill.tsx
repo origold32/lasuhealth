@@ -1,10 +1,11 @@
 "use client";
 
-import React, { act, ReactNode, useId, useState } from "react";
+import React, { act, ReactNode, useEffect, useId, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion as m } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useUrlState } from "@/hooks/useUrlState";
+import Loader3 from "./loaders/loader-3";
 
 type TabsProps = {
   tabs: TabItem[];
@@ -13,6 +14,14 @@ type TabsProps = {
   leftContent?: ReactNode;
   rightContent?: ReactNode;
   onChange?: (value: string) => void;
+  tabClassName?: string;
+  containerClassName?: string;
+  tabsTriggerClassName?: string;
+  activeTabClassName?: string;
+  contentClassName?: string;
+  tabListClassName?: string;
+  activeTabBgClassName?: string;
+  activeTextClassName?: string;
 };
 export type TabItem = {
   value: string;
@@ -26,6 +35,14 @@ const TabsPill = ({
   leftContent,
   rightContent,
   onChange = () => {},
+  tabClassName,
+  containerClassName,
+  tabListClassName,
+  tabsTriggerClassName,
+  activeTabClassName,
+  contentClassName,
+  activeTabBgClassName,
+  activeTextClassName,
 }: TabsProps) => {
   const [activeTab, setActiveTab] = useState<string>();
   const id = useId();
@@ -41,26 +58,51 @@ const TabsPill = ({
         onChange(value);
       }}
       defaultValue={defaultValue}
-      className="w-[400px]"
+      className={cn("w-full", tabClassName)}
     >
-      <div className="flex items-center flex-wrap gap-4 ">
+      <div
+        className={cn(
+          "flex items-center flex-wrap gap-4 mb-10",
+          containerClassName
+        )}
+      >
         {leftContent ? leftContent : null}
-        <TabsList>
+        <TabsList
+          className={cn(
+            "bg-[#FAFCFF] gap-4 border-b justify-normal",
+            tabListClassName
+          )}
+        >
           {tabs.map((tab, i) => {
             return (
               <TabsTrigger
                 key={i}
-                className="relative !bg-transparent"
+                className={cn(
+                  "relative bg-transparent rounded-full",
+                  tabsTriggerClassName,
+                  activeTab == tab.value
+                    ? activeTabClassName
+                    : "text-[#777E90] hover:text-[#39BD78]"
+                )}
                 value={tab.value}
               >
                 {activeTab == tab.value ? (
                   <m.div
-                    layoutDependency={""}
                     layoutId={id}
-                    className=" bg-background absolute inset-0 rounded z-0"
-                  ></m.div>
+                    className={cn(
+                      "bg-[#39BD78] absolute inset-0 rounded-full z-0",
+                      activeTabBgClassName
+                    )}
+                  />
                 ) : null}
-                <span className="relative z-10">
+                <span
+                  className={cn(
+                    "relative z-20 transition-colors delay-200",
+                    activeTab == tab.value
+                      ? ["text-[#39BD78]", activeTextClassName]
+                      : "text-[#777E90]"
+                  )}
+                >
                   {tab.valueDisplay ?? tab.value}
                 </span>
               </TabsTrigger>
@@ -71,7 +113,7 @@ const TabsPill = ({
       </div>
       {tabs.map(({ content, value }, i) => {
         return (
-          <TabsContent key={i} value={value}>
+          <TabsContent key={i} value={value} className={cn(contentClassName)}>
             {content}
           </TabsContent>
         );
@@ -89,45 +131,79 @@ export const TabsPillURL = ({
   leftContent,
   rightContent,
   onChange = () => {},
+  tabClassName,
+  containerClassName,
+  tabsTriggerClassName,
+  activeTabClassName,
+  contentClassName,
+  tabListClassName,
 }: TabsProps) => {
   const [activeTab, setActiveTab] = useUrlState<string>(
     queryName,
-    defaultValue,
-    "selfish"
+    defaultValue
   );
   const id = useId();
 
+  const isReady = !!activeTab;
+
+  useEffect(() => {
+    // sync the default if missing from query
+    if (!activeTab) {
+      setActiveTab(defaultValue);
+    }
+  }, [activeTab, defaultValue, setActiveTab]);
+
+  if (!isReady) return <Loader3 />;
+
   return (
     <Tabs
+      // key={activeTab}
       value={activeTab}
       onValueChange={(value) => {
         setActiveTab(value);
         onChange(value);
       }}
-      defaultValue={defaultValue}
-      className="w-full"
+      className={cn("w-full", tabClassName)}
     >
-      <div className="flex items-center flex-wrap gap-4 mb-10 ">
+      <div
+        className={cn(
+          "flex items-center flex-wrap gap-4 mb-10",
+          containerClassName
+        )}
+      >
         {leftContent ? leftContent : null}
-        <TabsList className=" bg-transparent gap-4 overflow-auto justify-normal ">
+        <TabsList
+          className={cn(
+            "bg-[#FAFCFF] gap-4 border-b justify-normal",
+            tabListClassName
+          )}
+        >
           {tabs.map((tab, i) => {
             return (
               <TabsTrigger
                 key={i}
-                className="relative !bg-[#FAFCFF] rounded-full"
+                className={cn(
+                  "relative !bg-transparent rounded-full",
+                  tabsTriggerClassName,
+                  activeTab == tab.value
+                    ? activeTabClassName
+                    : "text-[#777E90] hover:text-[#39BD78]"
+                )}
                 value={tab.value}
               >
                 {activeTab == tab.value ? (
                   <m.div
                     layoutDependency={""}
                     layoutId={id}
-                    className=" bg-[#242424] absolute inset-0 rounded-full z-10"
-                  ></m.div>
+                    className="absolute inset-0 rounded-full z-0"
+                  />
                 ) : null}
                 <span
                   className={cn(
                     "relative z-20 transition-colors delay-200",
-                    activeTab == tab.value ? " text-white" : "text-[#777E90]"
+                    activeTab == tab.value
+                      ? " text-[#39BD78]"
+                      : "text-[#777E90]"
                   )}
                 >
                   {tab.valueDisplay ?? tab.value}
@@ -140,7 +216,7 @@ export const TabsPillURL = ({
       </div>
       {tabs.map(({ content, value }, i) => {
         return (
-          <TabsContent key={i} value={value}>
+          <TabsContent key={i} value={value} className={cn(contentClassName)}>
             {content}
           </TabsContent>
         );

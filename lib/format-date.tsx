@@ -1,48 +1,46 @@
-export const isDateString = (str: string): boolean => {
-  // Attempt to parse the string as a date
-  const date = new Date(str);
-  return !isNaN(date.getTime());
-};
+// Already exists
+export function formatHumanDate(date?: string | Date | null): string {
+  if (!date) return "";
+  const dt = typeof date === "string" ? new Date(date) : date;
+  if (isNaN(dt.getTime())) return "";
 
-export const formatDateString = (str: string): string => {
-  const date = new Date(str);
-  if (isNaN(date.getTime())) {
-    throw new Error("Invalid date format");
-  }
+  const day = dt.getDate();
+  const month = dt.toLocaleString("en-GB", { month: "short" }); // e.g., "Jun"
+  const year = dt.getFullYear();
 
-  const options: Intl.DateTimeFormatOptions = {
-    day: "numeric",
-    month: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
+  const getSuffix = (d: number) => {
+    if (d > 3 && d < 21) return "th";
+    switch (d % 10) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
+    }
   };
 
-  return new Intl.DateTimeFormat("en-GB", options).format(date);
-};
-
-export function daysLeft(endDate: string): number {
-  const today = new Date();
-  const end = new Date(endDate);
-  const timeDiff = end.getTime() - today.getTime();
-
-  // Convert milliseconds to days
-  const daysDiff = Math.round(timeDiff / (1000 * 60 * 60 * 24));
-
-  return daysDiff > 0 ? daysDiff : 0; // Return 0 if the end date has passed
+  return `${day}${getSuffix(day)} ${month}. ${year}`;
 }
 
-// Example usage:
-console.log(daysLeft("2024-12-31")); // Replace with your target end date
+export function formatTime(date?: string | Date | null): string {
+  if (!date) return "";
+  const dt = typeof date === "string" ? new Date(date) : date;
+  if (isNaN(dt.getTime())) return "";
 
-export function calculateDurationInDays(startDate: string, endDate: string): number {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-  const timeDiff = end.getTime() - start.getTime();
+  return dt.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
 
-  // Convert milliseconds to days
-  const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-  return daysDiff;
+export function formatFullDateTime(date?: string | Date | null): string {
+  const datePart = formatHumanDate(date);
+  const timePart = formatTime(date);
+  if (!datePart && !timePart) return "";
+  if (datePart && timePart) return `${datePart} at ${timePart}`;
+  return datePart || timePart;
 }

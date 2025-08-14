@@ -46,6 +46,7 @@ export interface FormItem {
     secondCol: FormItem;
   };
 }
+
 export interface FormBuilderProps {
   formItems: FormItem[];
   onSubmit?: (data: Record<string, any>) => void;
@@ -54,7 +55,9 @@ export interface FormBuilderProps {
   formButtonText?: string;
   loadingText?: string;
   formButtonProps?: ButtonProps;
+  externalLoading?: boolean; // Add this prop
 }
+
 const FormBuilder: React.FC<FormBuilderProps> = ({
   formItems,
   onSubmit,
@@ -63,11 +66,16 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
   onItemChange,
   onCancel,
   formButtonProps,
+  externalLoading = false, // Add this prop with default value
 }) => {
   const [internalData, setInternalData] = React.useState<Record<string, any>>(
     {}
   );
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  // Use external loading state if provided, otherwise use internal state
+  const isLoading = externalLoading || isSubmitting;
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsSubmitting(true);
@@ -79,7 +87,12 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
       });
       await onSubmit?.({ ...internalData, ...formValues });
     } finally {
-      setIsSubmitting(false);
+      // Only reset internal loading if not using external loading
+      if (!externalLoading) {
+        setIsSubmitting(false);
+      } else {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -89,7 +102,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
   };
 
   React.useEffect(() => {
-    console.log("form items change", internalData);
+    // console.log("form items change", internalData);
   }, [formItems]);
 
   return (
@@ -358,6 +371,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
             variant={"outline"}
             rounded={"md"}
             onClick={onCancel}
+            disabled={isLoading} // Disable cancel button during loading
           >
             Cancel
           </Button>
@@ -366,9 +380,10 @@ const FormBuilder: React.FC<FormBuilderProps> = ({
           type="submit"
           className="w-full sm:h-11 flex-1 bg-gradient-to-r from-[#1B75BC] to-[#29ABE2] text-white"
           rounded={"md"}
+          disabled={isLoading} // Disable submit button during loading
           {...formButtonProps}
         >
-          {isSubmitting ? (
+          {isLoading ? (
             <div className="flex items-center justify-center gap-2">
               {loadingText ?? "Submitting"}
               <Loader1 />

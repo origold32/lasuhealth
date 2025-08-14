@@ -15,13 +15,14 @@ export interface TextAreaV1Props
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement>,
     React.ComponentPropsWithRef<"textarea">,
     InputInfoProps {
-  label?: string;
+  label?: string | React.ReactNode;
   labelClassName?: string;
   requiredStar?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   rootClassName?: string;
   defaultValue?: string | number | readonly string[];
+  wordLimit?: number;
 }
 
 const TextAreaV1 = React.forwardRef<HTMLTextAreaElement, TextAreaV1Props>(
@@ -41,6 +42,7 @@ const TextAreaV1 = React.forwardRef<HTMLTextAreaElement, TextAreaV1Props>(
       rightIcon,
       children,
       value: controlledValue,
+      wordLimit,
       ...props
     },
     ref
@@ -50,24 +52,34 @@ const TextAreaV1 = React.forwardRef<HTMLTextAreaElement, TextAreaV1Props>(
       string | number | readonly string[]
     >("");
 
-    // Determine if this is a controlled or uncontrolled component
     const isControlled = controlledValue !== undefined;
     const inputValue = isControlled ? controlledValue : internalValue;
 
-    // Check if input has content for label positioning
-    const hasContent =
-      inputValue != null &&
-      inputValue !== "" &&
-      String(inputValue).trim() !== "";
+    const wordCount = String(inputValue)
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean).length;
+    const remainingWords = wordLimit ? wordLimit - wordCount : undefined;
+    const showWarning =
+      typeof remainingWords === "number" &&
+      remainingWords <= 10 &&
+      remainingWords > 0;
+    const showError = typeof remainingWords === "number" && remainingWords < 0;
 
     const onInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const value = e.target.value;
+      const words = value.trim().split(/\s+/).filter(Boolean);
+
+      // Blocking input if over word limit
+      if (wordLimit && words.length > wordLimit) return;
+
       if (!isControlled) {
-        setInternalValue(e.target.value);
+        setInternalValue(value);
       }
+
       onChange && onChange(e);
     };
 
-    // Initialize internal value with defaultValue only once
     React.useEffect(() => {
       if (!isControlled && defaultValue !== undefined) {
         setInternalValue(defaultValue);
@@ -100,7 +112,7 @@ const TextAreaV1 = React.forwardRef<HTMLTextAreaElement, TextAreaV1Props>(
             htmlFor={id}
             className={cn(
               "absolute left-0 top-4 px-3 h-max transition-all ease-out duration-200 pointer-events-none",
-              hasContent && inputActive,
+              inputValue && inputActive,
               inputFocusLabelClassName,
               props.placeholder && inputPlaceholdernotshownLabelClassName,
               error && "!text-destructive",
@@ -126,7 +138,27 @@ const TextAreaV1 = React.forwardRef<HTMLTextAreaElement, TextAreaV1Props>(
             </div>
           )}
         </div>
+
         <InputInfo info={info} warn={warn} error={error} />
+
+        {typeof remainingWords === "number" && (
+          <div
+            className={cn(
+              "text-xs text-right mt-1",
+              showError
+                ? "text-destructive"
+                : showWarning
+                ? "text-yellow-600"
+                : "text-muted-foreground"
+            )}
+          >
+            {remainingWords < 0
+              ? "Word limit exceeded"
+              : `${remainingWords} word${
+                  remainingWords === 1 ? "" : "s"
+                } remaining`}
+          </div>
+        )}
       </div>
     );
   }

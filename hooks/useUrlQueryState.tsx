@@ -11,18 +11,17 @@ export default function useUrlQueryState<T extends string | number>(
 ): [T, SetQueryParamState] {
   const { setQueryParam, getQueryParam } = useUrlQueryParams();
   const queryParam = getQueryParam(paraName) as T;
-  // console.log("qiery aparam", getQueryParam(paraName), paraName);
 
   const setQueryParamState = useCallback(
     (value: string | number) => {
       console.log("setting active tab...", value, paraName);
-      setQueryParam(paraName, value);
+      // Pass the push parameter here too
+      setQueryParam(paraName, value, push);
     },
-    [paraName, setQueryParam]
+    [paraName, setQueryParam, push] // Add push to dependencies
   );
 
   useEffect(() => {
-    // console.log("in search query state change", paraName, defaultValue);
     if (
       (defaultValue !== undefined || defaultValue !== null) &&
       (queryParam === undefined || queryParam === null)

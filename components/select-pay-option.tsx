@@ -11,10 +11,13 @@ const SelectPaymentOption = ({ onSelect }: Props) => {
   const [active, setActive] = useState<string>();
 
   const opts = [
-    { name: "Paystack", img: "/images/logo-paystack.svg" },
-    { name: "Flutterwave", img: "/images/logo-flutterwave.svg" },
-    { name: "Fincra", img: "/images/logo-fincra.svg" },
-    { name: "Bank Transfer", img: "/images/logo-bank.svg" },
+    {
+      name: "Paystack",
+      img: "/images/logo-paystack.svg",
+    },
+    // { name: "Flutterwave", img: "/images/logo-flutterwave.svg" },
+    // { name: "Fincra", img: "/images/logo-fincra.svg" },
+    // { name: "Bank Transfer", img: "/images/logo-bank.svg" },
   ];
   return (
     <div>
@@ -42,15 +45,15 @@ const SelectPaymentOption = ({ onSelect }: Props) => {
               )}
             >
               <Image
-                height={30}
-                width={30}
+                height={130}
+                width={130}
                 className=" h-[30px]"
                 alt="payment-logo"
                 src={opt.img}
               />
-              <span className=" text-base text-black/70 uppercase ml-6">
+              {/* <span className=" text-base text-black/70 uppercase ml-6">
                 {opt.name}
-              </span>
+              </span> */}
               <RadioGroupItem className="ml-auto" value={opt.name} />
             </Label>
           );

@@ -1,4 +1,5 @@
 "use client";
+
 import * as React from "react";
 import { Input, InputInfoProps } from "@/components/ui/input";
 import PhoneInput, { Country, Value } from "react-phone-number-input";
@@ -13,7 +14,6 @@ import {
 } from "@/components/ui/select";
 import { getCountryCallingCode } from "react-phone-number-input";
 import { FlagIcon, FlagIconCode } from "react-flag-kit";
-import PropTypes from "prop-types";
 import { Trigger } from "@radix-ui/react-select";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
@@ -69,7 +69,7 @@ const InputPhone5 = React.forwardRef<HTMLInputElement, InputPhone5Props>(
           countrySelectComponent={CountrySelect}
           label={label ?? "Enter phone number"}
           {...props}
-          // ref={ref}
+          // ref={ref} // Uncomment this if InputV1 supports forwarding the ref
           value={props.value ?? value}
           onChange={(val) => {
             onChange?.(val);
@@ -87,29 +87,21 @@ export default InputPhone5;
 type CountrySelectProps = {
   value: Country;
   onChange: (val: string) => void;
-  labels: object;
-  iconComponent: React.ElementType;
   options: { value: string; label: string; divider: boolean }[];
 };
-const CountrySelect = ({
-  value,
-  onChange,
-  labels = [],
-  options,
-  iconComponent,
-  ...rest
-}: CountrySelectProps) => {
+
+const CountrySelect = ({ value, onChange, options }: CountrySelectProps) => {
   return (
     <Select value={value} onValueChange={onChange}>
       <Trigger
         className={cn(
-          "relative mr-0.5 focus:z-10 stroke-ring flex h-12 sm:h-12 w-[90px] mr-2/ items-center justify-between rounded-lg/ rounded-l-lg border border-r-0 border-input bg-background px-4 py-1 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
+          "relative mr-0.5 focus:z-10 stroke-ring flex h-12 sm:h-12 w-[90px] items-center justify-between rounded-l-lg border border-r-0 border-input bg-background px-4 py-1 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
         )}
       >
         <SelectValue placeholder={<span>🏁 Intl</span>}>
           <div className="flex items-center gap-1">
             <FlagIcon
-              className=" rounded-full overflow-hidden w-4 h-4 shrink-0"
+              className="rounded-full overflow-hidden w-4 h-4 shrink-0"
               code={value as FlagIconCode}
               size={16}
             />
@@ -121,23 +113,19 @@ const CountrySelect = ({
         <SelectGroup>
           <SelectLabel>Countries</SelectLabel>
           {options.map(({ value, label }) => (
-            <SelectItem
-              className="flex items-center "
-              key={value}
-              value={value}
-            >
+            <SelectItem className="flex items-center" key={value} value={value}>
               <div className="flex items-center gap-1">
                 {value ? (
                   <FlagIcon
-                    className=" rounded-full overflow-hidden w-5 h-5 shrink-0 mr-2"
+                    className="rounded-full overflow-hidden w-5 h-5 shrink-0 mr-2"
                     code={value as FlagIconCode}
                     size={20}
                   />
                 ) : (
-                  <span className=" mr-2">🏁</span>
+                  <span className="mr-2">🏁</span>
                 )}
                 {label}
-                {value ? `+${getCountryCallingCode(value as Country)}` : null}
+                {value ? ` +${getCountryCallingCode(value as Country)}` : null}
               </div>
             </SelectItem>
           ))}
@@ -145,35 +133,4 @@ const CountrySelect = ({
       </SelectContent>
     </Select>
   );
-};
-
-CountrySelect.propTypes = {
-  /**
-   * A two-letter country code.
-   * Example: "US", "RU", etc.
-   */
-  value: PropTypes.string,
-
-  /**
-   * A function of `value: string`.
-   * Updates the `value` property.
-   */
-  onChange: PropTypes.func.isRequired,
-
-  // `<select/>` options.
-  options: PropTypes.arrayOf(
-    PropTypes.shape({
-      value: PropTypes.string,
-      label: PropTypes.string,
-      divider: PropTypes.bool,
-    })
-  ).isRequired,
-
-  // `readonly` attribute doesn't work on a `<select/>`.
-  // https://github.com/catamphetamine/react-phone-number-input/issues/419#issuecomment-1764384480
-  // https://www.delftstack.com/howto/html/html-select-readonly/
-  // To work around that, if `readOnly: true` property is passed
-  // to this component, it behaves analogous to `disabled: true`.
-  disabled: PropTypes.bool,
-  readOnly: PropTypes.bool,
 };

@@ -8,10 +8,11 @@ import React, { EventHandler, ReactNode, useState } from "react";
 import useSWR from "swr";
 import { Label } from "./ui/label";
 import { Currency } from "./currency-amount";
+import { formatAmount, getCurrencySymbol } from "@/lib/formatCurrency";
 
 type InputCurrencyAmountProps = {
   info?: ReactNode;
-  currency?: ReactNode;
+  currency?: string;
   error?: boolean;
   label?: string;
   onChange?: (value: number) => void;
@@ -21,7 +22,8 @@ const InputCurrencyAmount = ({
   label,
   info,
   error,
-  currency = <Currency curr="NGN" />,
+  currency = "",
+  // <Currency curr="NGN" />,
   onChange,
 }: InputCurrencyAmountProps) => {
   const [value, setValue] = useState<string>("");
@@ -31,7 +33,6 @@ const InputCurrencyAmount = ({
     const amount = e.target.value;
     setValue(formatNumberWithCommas(amount));
     onChange && onChange(+amount.replaceAll(",", ""));
-    console.log("amount  is ", +amount.replaceAll(",", ""));
   };
   return (
     <div>
@@ -49,7 +50,8 @@ const InputCurrencyAmount = ({
               error && " text-destructive/20"
             )}
           >
-            {currency ? currency : "$"}
+            {/* {currency ? currency : "$"} */}
+            {getCurrencySymbol(currency)}
           </span>
           <input
             required
@@ -67,7 +69,11 @@ const InputCurrencyAmount = ({
             info
           ) : (
             <span>
-              Amount balance - <span className=" font-sans font-semibold">₦{formatNumberWithCommas(balance)}</span>
+              Amount balance -{" "}
+              <span className=" font-sans font-semibold">
+                {getCurrencySymbol(currency)}
+                {formatAmount(balance)}
+              </span>
             </span>
           )}
         </div> */}

@@ -1,7 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +21,7 @@ type DrawerData = {
   title?: React.ReactNode;
   description?: React.ReactNode;
   content?: ((closeDrawer: () => void) => React.ReactNode) | React.ReactNode;
+  className?: string;
   direction?: "top" | "bottom" | "right" | "left";
   showClose?: boolean;
   showHandle?: boolean;
@@ -32,8 +42,11 @@ const DrawerProvider = ({ children }: DrawerProviderProps) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   const modalContentClassName = drawerData?.modalContentClassName;
   const openFrom = isMobile ? "bottom" : drawerData?.direction ?? "right";
-  const showHandle: boolean = isMobile ? drawerData?.showHandle ?? true : drawerData?.showHandle ?? false;
+  const showHandle: boolean = isMobile
+    ? drawerData?.showHandle ?? true
+    : drawerData?.showHandle ?? false;
   const showClose: boolean = drawerData?.showClose ?? false;
+  const className = drawerData?.className ?? "";
 
   const openDrawer = (data?: DrawerData) => {
     setDrawerData(data);
@@ -42,15 +55,26 @@ const DrawerProvider = ({ children }: DrawerProviderProps) => {
 
   const closeDrawer = () => {
     setIsOpen(false);
-    setDrawerData({ direction: openFrom, modalContentClassName: modalContentClassName });
+    setDrawerData({
+      direction: openFrom,
+      modalContentClassName: modalContentClassName,
+    });
   };
 
   return (
     <DrawerContext.Provider value={{ openDrawer, closeDrawer }}>
-      <Drawer open={isOpen} onOpenChange={(open) => setIsOpen(open)} onClose={() => closeDrawer()} shouldScaleBackground={true} direction={openFrom}>
+      <Drawer
+        open={isOpen}
+        onOpenChange={(open) => setIsOpen(open)}
+        onClose={() => closeDrawer()}
+        shouldScaleBackground={true}
+        direction={openFrom}
+      >
         <DrawerContent
           className={cn(
-            !modalContentClassName ? "flex flex-col  max-h-[87vh] sm:max-h-full w-full sm:max-w-[500px] fixed z-50 rounded-t-xl sm:rounded-none" : modalContentClassName,
+            !modalContentClassName
+              ? "flex flex-col  max-h-[87vh] sm:max-h-full w-auto sm:max-w-[500px] fixed z-50 rounded-t-xl sm:rounded-none"
+              : modalContentClassName,
             openFrom == "right" && " !right-0",
             openFrom == "top" && "!top-0",
             openFrom == "left" && "!left-0",
@@ -59,7 +83,12 @@ const DrawerProvider = ({ children }: DrawerProviderProps) => {
         >
           {showClose ? (
             <DrawerClose asChild>
-              <Button onClick={() => setIsOpen(false)} variant={"ghost"} size={"icon-sm"} className=" absolute right-4 top-4 text-muted-foreground">
+              <Button
+                onClick={() => setIsOpen(false)}
+                variant={"ghost"}
+                size={"icon-sm"}
+                className=" absolute right-4 top-4 text-muted-foreground"
+              >
                 <X size={16} />
               </Button>
             </DrawerClose>
@@ -68,21 +97,40 @@ const DrawerProvider = ({ children }: DrawerProviderProps) => {
             <div
               className={cn(
                 " rounded-full bg-muted",
-                openFrom == "right" && "absolute left-4 top-1/2 -translate-y-1/2 w-2 h-[100px]",
-                openFrom == "left" && "absolute right-4 top-1/2 -translate-y-1/2 w-2 h-[100px]",
-                openFrom == "top" && "absolute mx-auto bottom-4 inset-x-0 h-2 w-[100px]",
-                openFrom == "bottom" && "absolute mx-auto top-4 inset-x-0 h-2 w-[100px]"
+                openFrom == "right" &&
+                  "absolute left-4 top-1/2 -translate-y-1/2 w-2 h-[100px]",
+                openFrom == "left" &&
+                  "absolute right-4 top-1/2 -translate-y-1/2 w-2 h-[100px]",
+                openFrom == "top" &&
+                  "absolute mx-auto bottom-4 inset-x-0 h-2 w-[100px]",
+                openFrom == "bottom" &&
+                  "absolute mx-auto top-4 inset-x-0 h-2 w-[100px]"
               )}
             />
           ) : null}
-          <div className={cn("p-6 lg:p-10 overflow-y-auto h-full")}>
+          <div
+            className={cn(
+              "p-6 lg:p-10 overflow-y-auto h-full space-y-2",
+              className
+            )}
+          >
             {drawerData?.title || drawerData?.description ? (
               <DrawerHeader className="p-0">
-                {drawerData?.title ? <DrawerTitle>{drawerData.title}</DrawerTitle> : null}
-                {drawerData?.description ? <DrawerDescription>{drawerData.description}</DrawerDescription> : null}
+                {drawerData?.title ? (
+                  <DrawerTitle>{drawerData.title}</DrawerTitle>
+                ) : null}
+                {drawerData?.description ? (
+                  <DrawerDescription>
+                    {drawerData.description}
+                  </DrawerDescription>
+                ) : null}
               </DrawerHeader>
             ) : null}
-            {drawerData ? (typeof drawerData.content == "function" ? drawerData.content(closeDrawer) : drawerData.content) : null}
+            {drawerData
+              ? typeof drawerData.content == "function"
+                ? drawerData.content(closeDrawer)
+                : drawerData.content
+              : null}
           </div>
         </DrawerContent>
       </Drawer>
@@ -109,7 +157,13 @@ const useDrawer = (modalConfig?: DrawerData) => {
 };
 
 const DrawerTitleCaption = (props: TitleCaptionProps) => {
-  return <TitleCatption className="mb-10 mt-4 sm:mt-0" titleClassName=" text-2xl sm:text-3xl" {...props} />;
+  return (
+    <TitleCatption
+      className="mb-10 mt-4 sm:mt-0"
+      titleClassName=" text-2xl sm:text-3xl"
+      {...props}
+    />
+  );
 };
 
 export { DrawerProvider, useDrawer, DrawerTitleCaption };

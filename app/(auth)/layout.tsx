@@ -9,7 +9,7 @@ type Props = {
 };
 
 const Layout = ({ children }: Props) => {
-  useAuthPageRedirect();
+  // useAuthPageRedirect();
 
   return <AuthLayoutV1>{children}</AuthLayoutV1>;
 };

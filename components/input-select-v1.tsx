@@ -1,15 +1,14 @@
 "use client";
 
-import { InputInfo, InputInfoProps } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { InputInfo, InputInfoProps } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import * as React from "react";
 import * as RadixSelect from "@radix-ui/react-select";
@@ -57,104 +56,98 @@ const InputSelectV1 = React.forwardRef<HTMLButtonElement, InputSelectV1Props>(
     ref
   ) => {
     const id = React.useId();
-    const focusComingFromContentClose = React.useRef<boolean>(false);
-    const [selectOpened, setSelectOpened] = React.useState<boolean>(false);
-    const validDefaultValue = items.find(
-      (item) => item.value == props.defaultValue
-    )
-      ? props.defaultValue
-      : "";
-    const [labelOpen, setLabelOpen] = React.useState<boolean>(
-      validDefaultValue ? true : false
-    );
-    const [hasValue, setHasValue] = React.useState<string | undefined>(
-      validDefaultValue
-    );
+    const focusComingFromContentClose = React.useRef(false);
+    const [selectOpened, setSelectOpened] = React.useState(false);
+
+    const isControlled = props.value !== undefined;
+
+    const [internalValue, setInternalValue] = React.useState(() => {
+      const defaultItem = items.find(
+        (item) => item.value === props.defaultValue
+      );
+      return defaultItem?.value ?? "";
+    });
+
+    const currentValue = isControlled ? props.value : internalValue;
+    const [labelOpen, setLabelOpen] = React.useState(!!currentValue);
 
     React.useEffect(() => {
-      const bgSelectInput =
-        (document.getElementById("background_select") as HTMLInputElement) ||
-        null;
-      if (
-        bgSelectInput &&
-        props.required &&
-        requiredErrorMessage &&
-        !hasValue
-      ) {
-        bgSelectInput.setCustomValidity(requiredErrorMessage);
-      } else {
-        bgSelectInput.setCustomValidity("");
+      setLabelOpen(!!currentValue);
+    }, [currentValue]);
+
+    React.useEffect(() => {
+      const bgInput = document.getElementById(
+        "background_select"
+      ) as HTMLInputElement | null;
+      if (bgInput && props.required && requiredErrorMessage && !currentValue) {
+        bgInput.setCustomValidity(requiredErrorMessage);
+      } else if (bgInput) {
+        bgInput.setCustomValidity("");
       }
-    }, [requiredErrorMessage, props.required, hasValue]);
+    }, [currentValue, props.required, requiredErrorMessage]);
 
     return (
-      <div
-        className={cn(
-          "/min-h-[calc(2.5rem_+_10px)] /grid /content-end",
-          rootClassName
-        )}
-      >
+      <div className={cn("min-h-[calc(2.5rem+10px)]", rootClassName)}>
         <div className="relative">
+          {/* Hidden input for HTML form validation */}
           <input
             type="text"
             id="background_select"
-            className=" sr-only bottom-0 left-0"
+            className="sr-only"
             tabIndex={-1}
             aria-hidden="true"
             name={props.name}
-            value={hasValue || validDefaultValue || ""}
+            value={currentValue}
             onChange={() => {}}
             required={props.required}
             title={label || "Select input"}
             placeholder={
               typeof placeholder === "string" ? placeholder : "Select an item"
             }
+            readOnly
           />
+
           <Select
             open={selectOpened}
             onOpenChange={(open) => {
               setSelectOpened(open);
               open && setLabelOpen(true);
-              onOpenChange && onOpenChange(open);
+              onOpenChange?.(open);
             }}
             onValueChange={(value) => {
-              setHasValue(value);
-              onValueChange && onValueChange(value);
-              onChange &&
-                onChange({ target: { name: props.name ?? "", value: value } });
+              if (!isControlled) {
+                setInternalValue(value);
+              }
+
+              onValueChange?.(value);
+              onChange?.({
+                target: { name: props.name ?? "", value },
+              });
             }}
+            value={currentValue}
             {...props}
-            defaultValue={validDefaultValue}
           >
             <SelectTrigger
               id={id}
               ref={ref}
               className={cn(
-                " cursor-pointer",
-                (error || warn) && "border-2  /ring-offset-2",
+                "cursor-pointer",
+                (error || warn) && "border-2 ring-offset-2",
                 error &&
-                  "[--ring:var(--destructive)] ring-destructive/ border-destructive",
-                warn && "[--ring:var(--warn)] ring-warn/ border-warn",
+                  "border-destructive ring-destructive/ [--ring:var(--destructive)]",
+                warn && "border-warn ring-warn/ [--ring:var(--warn)]",
                 className
               )}
               onFocus={() => {
-                console.log("on focus");
                 setLabelOpen(true);
                 if (!focusComingFromContentClose.current) {
-                  !hasValue &&
+                  !currentValue &&
                     immediateOpenSelectWhenNoValue &&
                     setSelectOpened(true);
                 }
               }}
               onBlur={() => {
-                console.log(
-                  "on blur",
-                  !hasValue,
-                  !selectOpened,
-                  !hasValue && !selectOpened
-                );
-
-                if (!selectOpened && !hasValue) {
+                if (!selectOpened && !currentValue) {
                   setLabelOpen(false);
                 }
                 focusComingFromContentClose.current = false;
@@ -168,32 +161,33 @@ const InputSelectV1 = React.forwardRef<HTMLButtonElement, InputSelectV1Props>(
                 }
               />
             </SelectTrigger>
+
+            {/* Floating label */}
             <Label
               htmlFor={id}
               className={cn(
-                "absolute  left-0 top-1/2 -translate-y-1/2 px-3 h-max transition-all ease-out duration-200  pointer-events-none ",
+                "absolute left-0 top-1/2 -translate-y-1/2 px-3 h-max transition-all duration-200 pointer-events-none",
                 labelOpen && inputActive,
-                error && " !text-destructive",
-                warn && " !text-warn",
+                error && "text-destructive",
+                warn && "text-warn",
                 labelClassName
               )}
             >
               {label}
               {requiredStar && props.required && " *"}
             </Label>
+
             <SelectContent
-              onCloseAutoFocus={(e) => {
+              onCloseAutoFocus={() => {
                 focusComingFromContentClose.current = true;
               }}
             >
               <SelectGroup>
-                {items?.map((item, i) => {
-                  return (
-                    <SelectItem key={i} value={item.value}>
-                      {item.content ?? item.value}
-                    </SelectItem>
-                  );
-                })}
+                {items?.map((item, i) => (
+                  <SelectItem key={i} value={item.value}>
+                    {item.content ?? item.value}
+                  </SelectItem>
+                ))}
               </SelectGroup>
             </SelectContent>
           </Select>

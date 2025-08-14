@@ -1,12 +1,19 @@
-"use client";
 import { fetcher } from "@/swr";
 import useSWR from "swr";
 
-export default function useUser() {
-  const { data, isLoading, mutate } = useSWR("/auth/profile", fetcher, {
-    keepPreviousData: true,
-  });
-  // console.log("data is in useUser", data);
+const useUser = () => {
+  const { data: response, error, isLoading, mutate } = useSWR("/auth/profile", fetcher);
+  
+  // Extract the actual user data from the API response
+  const user = response?.data;
 
-  return { user: data?.data, isLoading, mutateUser: mutate };
-}
+  return {
+    user,
+    isLoading,
+    error,
+    response, // Keep the full response available if needed
+    mutateUser: mutate
+  };
+};
+
+export default useUser;

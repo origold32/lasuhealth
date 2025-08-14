@@ -24,7 +24,7 @@ const TitleCatption = (props: TitleCaptionProps) => {
       >
         <div
           className={cn(
-            "relative font-semibold text-3xl w-max ",
+            "relative font-semibold text-3xl w-fit ",
             props.caption && "mb-.5",
             props.titleClassName
           )}
