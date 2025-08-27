@@ -1,4 +1,21 @@
-// Already exists
+export function formatShortDate(date?: string | Date | null): string {
+  if (!date) return "";
+  const dt = typeof date === "string" ? new Date(date) : date;
+  if (isNaN(dt.getTime())) return "";
+  return dt.toLocaleDateString("en-GB"); // e.g., 10/08/2002
+}
+
+export function formatLongDate(date?: string | Date | null): string {
+  if (!date) return "";
+  const dt = typeof date === "string" ? new Date(date) : date;
+  if (isNaN(dt.getTime())) return "";
+  return dt.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long", // e.g., August
+    year: "numeric",
+  }); // e.g., 10 August 2002
+}
+
 export function formatHumanDate(date?: string | Date | null): string {
   if (!date) return "";
   const dt = typeof date === "string" ? new Date(date) : date;

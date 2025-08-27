@@ -9,17 +9,32 @@ import { useUrlState } from "@/hooks/useUrlState";
 import StudentDetails from "./student-id";
 
 export default function StudentListPage() {
-  // const {data, isLoading} = useSWR("/students", fetcher);
-  // const students = data?.data?.items || [];
-  const [selectedStudentId, setSelectedStudentId] = useUrlState<string | null>(
-    "selectedStudentId",
-    null
-  );
-  if (selectedStudentId) {
+  const { data } = useSWR("/students", fetcher);
+  const students = data?.data?.items || [];
+
+  const [selectedStudentName, setSelectedStudentName] = useUrlState<
+    string | null
+  >("selectedStudentId", null);
+
+  const selectedStudent = selectedStudentName
+    ? students.find((student: any) => {
+        const fullName = [
+          student.lastname,
+          student.firstname,
+          student.middlename,
+        ]
+          .filter(Boolean)
+          .join("_")
+          .replaceAll(" ", "_");
+        return fullName === selectedStudentName;
+      })
+    : null;
+
+  if (selectedStudent) {
     return (
       <StudentDetails
-        id={selectedStudentId}
-        onBack={() => setSelectedStudentId(null)}
+        id={selectedStudent.id}
+        onBack={() => setSelectedStudentName(null)}
       />
     );
   }
@@ -47,17 +62,28 @@ export default function StudentListPage() {
       name: "Actions",
       type: "custom",
       dataKey: ["id"],
-      render: (id) => (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            setSelectedStudentId(id);
-          }}
-        >
-          View Details
-        </Button>
-      ),
+      render: (id, student) => {
+        const fullNameForUrl = [
+          student.lastname,
+          student.firstname,
+          student.middlename,
+        ]
+          .filter(Boolean)
+          .join("_")
+          .replaceAll(" ", "_");
+
+        return (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setSelectedStudentName(fullNameForUrl);
+            }}
+          >
+            View Details
+          </Button>
+        );
+      },
     },
   ];
 
@@ -66,19 +92,6 @@ export default function StudentListPage() {
       <TitleCatption title="Record Management" />
 
       <div className="bg-white rounded-md shadow-sm p-2 space-y-4">
-        {/* <div className="flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <div className="px-4 py-2 border border-[#D0D5DD] rounded-md flex items-center gap-2 cursor-pointer">
-              <IoFilter />
-              <span>Filter</span>
-            </div>
-            <div className="flex items-center justify-center bg-[#1363DF] text-white rounded-md py-2 px-4 gap-2 text-sm cursor-pointer">
-              <span>Add New Record</span>
-              <PiPlus />
-            </div>
-          </div>
-        </div> */}
-
         <AutoTableApi
           cols={tableCols}
           apiUrl={"/students"}

@@ -8,23 +8,24 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import useUser from "@/hooks/useUser";
 import useAuth from "@/auth/use-auth";
-
 import { TbMedicalCross } from "react-icons/tb";
 import { IoFitnessOutline, IoLogOut } from "react-icons/io5";
 import DashboardIcon from "../../public/images/dashboard-icon";
 import FolderIcon from "../../public/images/folder-icon";
 import { GrUserWorker } from "react-icons/gr";
 import { PiPackage } from "react-icons/pi";
+import { CgProfile } from "react-icons/cg";
 import { useIsMobile } from "@/hooks/useMobile";
 
 const studentNavItems = [
   { name: "Dashboard", href: "/student", icon: DashboardIcon },
-  { name: "Consultation", href: "/student/consultation", icon: TbMedicalCross },
+  { name: "Appointments", href: "/student/appointments", icon: TbMedicalCross },
   {
-    name: "Medical Fitness",
-    href: "/student/medical-fitness",
+    name: "Medical Records",
+    href: "/student/medical-records",
     icon: IoFitnessOutline,
   },
+  { name: "Profile", href: "/student/profile", icon: CgProfile },
   { name: "Logout", href: "#", icon: IoLogOut },
 ];
 
@@ -35,7 +36,7 @@ const staffNavItems = [
     href: "/staff/record-management",
     icon: FolderIcon,
   },
-  { name: "Reporting", href: "/staff/reporting", icon: PiPackage },
+  // { name: "Reporting", href: "/staff/reporting", icon: PiPackage },
   { name: "Staff Log", href: "/staff/staff-log", icon: GrUserWorker },
   { name: "Logout", href: "#", icon: IoLogOut },
 ];

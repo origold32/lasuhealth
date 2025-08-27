@@ -16,7 +16,6 @@ import DateFormatterToText from "../date-formatter-to-text";
 import { getObjectKeyData } from "@/lib/get-object-key-data";
 import InputSelectV1 from "../input-select-v1";
 import { cn } from "@/lib/utils";
-import { sentenceCase } from "@/lib/text";
 
 export type TableColProps = {
   name: string;
@@ -24,6 +23,7 @@ export type TableColProps = {
   render?: (data: any, fullItem?: any) => React.ReactNode;
   dataKey: string[];
   dateMode?: "date" | "time" | "datetime";
+  dateDisplay?: "human" | "short" | "long";
   className?: string;
 };
 
@@ -138,17 +138,13 @@ const AutoTableApi = ({
                   if (col.type === "text") {
                     let displayValue = value;
 
-                    // inside AutoTableApi, in the "text" branch
-                    if (col.dataKey.includes("role")) {
-                      const normalizeRole = (s: string) =>
-                        sentenceCase(s.replace(/[_-]+/g, " "), false);
-
+                    if (col.dataKey.includes("roles")) {
                       if (Array.isArray(value)) {
                         displayValue = value
-                          .map((v) => normalizeRole(String(v)))
+                          .map((r) => r.replace(/_/g, " "))
                           .join(", ");
                       } else if (typeof value === "string") {
-                        displayValue = normalizeRole(value);
+                        displayValue = value.replace(/_/g, " ");
                       }
                     }
 
@@ -177,6 +173,7 @@ const AutoTableApi = ({
                         <DateFormatterToText
                           date={value}
                           mode={col.dateMode || "date"}
+                          display={col.dateDisplay || "human"}
                           className={col.className}
                         />
                       </TableBodyCol>

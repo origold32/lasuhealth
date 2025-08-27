@@ -161,7 +161,7 @@ export default function StaffListPage() {
         <TitleCaption title="Staff List" />
         <Button
           onClick={() => setAddStaff("addStaff")}
-          className="bg-gradient-to-r from-[#1B75BC] via-[#29ABE2] to-[#2BB677CA]"
+          className="bg-gradient-to-r from-[#1B75BC] to-[#29ABE2]"
         >
           Add Staff
         </Button>

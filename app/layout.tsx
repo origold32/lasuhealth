@@ -37,7 +37,7 @@ export default function RootLayout({
             <DrawerProvider>{children}</DrawerProvider>
           </DialogProvider>
         </Suspense>
-        <Toaster richColors position="bottom-right" duration={1000} />
+        <Toaster richColors position="top-right" duration={1000} />
       </body>
     </html>
   );

@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { BiChart } from "react-icons/bi";
 import { IoDocumentTextOutline } from "react-icons/io5";
 
@@ -36,10 +37,13 @@ export default function TotalRecords() {
           </div>
         </CardContent>
       </Card>
-      <button className="w-full px-6 py-3 flex justify-between items-center text-[#1AB2FF] text-xs">
+      <Link
+        href="/staff/record-management"
+        className="w-full px-6 py-3 flex justify-between items-center text-[#1AB2FF] text-xs"
+      >
         <span>View all Records</span>
         <ChevronRight />
-      </button>
+      </Link>
     </div>
   );
 }
